@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - Macedo Store</title>
+
+<style>
+body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#0f0d1a;
+    font-family:Arial;
+    color:white;
+}
+
+/* CARD */
+.login-box{
+    width:320px;
+    padding:30px;
+    border-radius:15px;
+    background:#1b182b;
+    box-shadow:0 0 20px rgba(250,83,83,0.4);
+    text-align:center;
+}
+
+/* TÍTULO */
+.login-box h2{
+    margin-bottom:20px;
+    color:#fa5353;
+}
+
+/* INPUTS */
+.login-box input{
+    width:100%;
+    padding:12px;
+    margin:8px 0;
+    border:none;
+    border-radius:8px;
+    outline:none;
+    background:#322f40;
+    color:white;
+}
+
+/* BOTÃO LOGIN */
+.login-box button{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+    background:#fa5353;
+    color:white;
+    transition:0.3s;
+}
+
+.login-box button:hover{
+    background:#d94343;
+    transform:scale(1.03);
+}
+
+/* BOTÃO CADASTRO */
+.cadastro-btn{
+    background:transparent;
+    border:1px solid #fa5353;
+    margin-top:10px;
+}
+
+.cadastro-btn:hover{
+    background:#fa5353;
+}
+
+/* TEXTO PEQUENO */
+small{
+    display:block;
+    margin-top:10px;
+    opacity:0.7;
+}
+</style>
+</head>
+
+<body>
+
+<div class="login-box">
+
+    <h2>🎮 Macedo Login</h2>
+
+    <input id="user" placeholder="Usuário">
+    <input id="pass" type="password" placeholder="Senha">
+    
+    <button id="btn-entrar">Entrar</button>
+    <button class="cadastro-btn" id="btn-mostrar-cadastro">Não tenho login</button>
+    <small>Entre para acessar o site</small>
+
+</div>
+
+<script type="module" src="js/firebase-config.js"></script>
+</body>
+</html>

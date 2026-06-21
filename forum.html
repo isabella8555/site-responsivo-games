@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fórum - Macedo Store</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+body{
+    font-family: Arial;
+    background:#1b182b;
+    color:white;
+}
+
+.forum-container{
+    max-width:800px;
+    margin:auto;
+    padding:20px;
+}
+
+textarea{
+    width:100%;
+    height:100px;
+    border-radius:10px;
+    padding:10px;
+}
+
+button{
+    cursor:pointer;
+    margin:5px;
+    padding:8px 12px;
+}
+
+.comentario-box{
+    background:#322f40;
+    padding:15px;
+    border-radius:10px;
+    margin-top:15px;
+}
+
+.estrelas span{
+    cursor:pointer;
+    font-size:20px;
+    color:#555;
+}
+
+.estrela.ativa{
+    color:gold;
+}
+
+.resposta{
+    background:#2a2738;
+    margin-top:10px;
+    padding:10px;
+    border-radius:8px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="forum-container">
+
+<h1>Fórum Macedo Store</h1>
+
+<textarea id="postTexto" placeholder="Escreva algo..."></textarea>
+<button onclick="postar()">Publicar</button>
+
+<div id="posts"></div>
+
+</div>
+
+<script>
+
+const DONO_SITE = "admin";
+
+let usuario = localStorage.getItem("usuario") || "anon";
+
+let posts = JSON.parse(localStorage.getItem("posts")) || [];
+
+function salvar(){
+    localStorage.setItem("posts", JSON.stringify(posts));
+}
+
+function postar(){
+    const texto = document.getElementById("postTexto").value.trim();
+
+    if(!texto){
+        alert("Escreva algo!");
+        return;
+    }
+
+    posts.unshift({
+        id: Date.now(),
+        usuario,
+        texto,
+        likes: 0,
+        dislikes: 0,
+        estrelas: 0,
+        respostas: [],
+        curtidas: [],
+        dislikesUsuarios: []
+    });
+
+    salvar();
+    renderizar();
+
+    document.getElementById("postTexto").value = "";
+}
+
+function like(id){
+    const post = posts.find(p => p.id === id);
+
+    if(post.curtidas.includes(usuario)) return;
+
+    post.likes++;
+    post.curtidas.push(usuario);
+
+    salvar();
+    renderizar();
+}
+
+function dislike(id){
+    const post = posts.find(p => p.id === id);
+
+    if(post.dislikesUsuarios.includes(usuario)) return;
+
+    post.dislikes++;
+    post.dislikesUsuarios.push(usuario);
+
+    salvar();
+    renderizar();
+}
+
+function estrela(id, valor){
+    const post = posts.find(p => p.id === id);
+    post.estrelas = valor;
+    salvar();
+    renderizar();
+}
+
+function responder(id){
+    const texto = prompt("Resposta:");
+
+    if(!texto) return;
+
+    const post = posts.find(p => p.id === id);
+
+    post.respostas.push({
+        id: Date.now(),
+        usuario,
+        texto
+    });
+
+    salvar();
+    renderizar();
+}
+
+function apagar(id){
+    posts = posts.filter(p =>
+        !(p.id === id && (p.usuario === usuario || usuario === DONO_SITE))
+    );
+
+    salvar();
+    renderizar();
+}
+
+function renderizar(){
+
+    const container = document.getElementById("posts");
+    container.innerHTML = "";
+
+    posts.forEach(post => {
+
+        container.innerHTML += `
+        <div class="comentario-box">
+
+            <b>👤 ${post.usuario}</b>
+
+            <p>${post.texto}</p>
+
+            <div class="estrelas">
+                ${[1,2,3,4,5].map(n => `
+                    <span class="${n <= post.estrelas ? 'estrela ativa' : 'estrela'}"
+                    onclick="estrela(${post.id},${n})">★</span>
+                `).join("")}
+            </div>
+
+            <div>
+                <button onclick="like(${post.id})">👍 ${post.likes}</button>
+                <button onclick="dislike(${post.id})">👎 ${post.dislikes}</button>
+                <button onclick="responder(${post.id})">Responder</button>
+                <button onclick="apagar(${post.id})">Apagar</button>
+            </div>
+
+            <div>
+                ${post.respostas.map(r => `
+                    <div class="resposta">
+                        <b>${r.usuario}</b>: ${r.texto}
+                    </div>
+                `).join("")}
+            </div>
+
+        </div>
+        `;
+    });
+}
+
+renderizar();
+
+</script>
+
+</body>
+</html>
