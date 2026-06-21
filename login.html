@@ -88,9 +88,9 @@ small{
 
 <div class="login-box">
 
-    <h2>🎮 Macedo Login</h2>
+    <h2> Macedo Login</h2>
 
-    <input id="user" placeholder="Usuário">
+    <input id="user" placeholder="E-mail do Usuário">
     <input id="pass" type="password" placeholder="Senha">
     
     <button id="btn-entrar">Entrar</button>
@@ -99,6 +99,46 @@ small{
 
 </div>
 
-<script type="module" src="js/firebase-config.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+<script type="module">
+    import { auth } from "./js/firebase-config.js";
+    import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const btnEntrar = document.getElementById('btn-entrar');
+    const inputUser = document.getElementById('user');
+    const inputPass = document.getElementById('pass');
+
+    btnEntrar.addEventListener('click', () => {
+        const email = inputUser.value;
+        const password = inputPass.value;
+
+        if (!email || !password) {
+            alert('Por favor, preencha todos os campos.');
+            return;
+        }
+
+        // Faz o login no Firebase
+        signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                // AQUI ESTÁ O SEGREDO: Salva que o usuário logou com sucesso
+                sessionStorage.setItem("logado", "true");
+                
+                // Agora sim, manda ele para a página principal
+                window.location.href = "index.html";
+            })
+            .catch((error) => {
+                console.error("Erro ao logar:", error.message);
+                alert("Erro ao fazer login. Verifique seu e-mail e senha.");
+            });
+    });
+
+    // Botão de cadastro (caso queira redirecionar depois para uma tela de registro)
+    document.getElementById('btn-mostrar-cadastro').addEventListener('click', () => {
+        alert('Funcionalidade de cadastro pode ser inserida aqui ou redirecionar para cadastro.html');
+    });
+</script>
+
 </body>
 </html>
